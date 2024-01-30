@@ -1,0 +1,333 @@
+---
+format: html
+---
+
+```{r}
+#| echo: false
+sec = 7
+cur = 0
+```
+
+# Estimations of lifetime distributions
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Why do we need to estimate
+
+- The main problem about the force of mortality $\mu_t$ (a.k.a. the hazard rate $\lambda_t$) is that it is unknown in practice.
+
+- Instead, one has data that is the result of some observations. Observations are made at discrete moments of time.
+
+- We consider the case when the age $x$ with which persons are entering into the observation is either irrelevant or uniform (i.e. the whole observed population has "almost" the same age).
+
+- Hence, time starts at $0$ with the start of observation and all changes are recorded at discrete moments of time only.
+
+- Let $t_1<t_2<t_3<\ldots$ be ordered moments of time when the records where updated (e.g. days when deaths happened). Stress that the number of events at each $t_j$ may be bigger than $1$.
+
+- The moments of time are random. Our basic \textit{ad hoc} assumption is that all $t_j$ have independent identical distribution.
+
+- We assume hence that $T$ changes at times $t_1, t_2,\ldots$ only, hence, $F(t)=\mathbb{P}(T\leq t)$ is a step-function: it has jumps at $t_j$, $j\geq1$, and it takes constant value in between.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Discrete hazard function
+
+We define
+$$
+\lambda_j = \mathbb{P}(T=t_j \mid T\geq t_j), \quad j\geq1.
+$$
+
+Then
+$$
+\lambda_j=\frac{\mathbb{P}(T=t_j)}{\mathbb{P}(T\geq t_j)}=
+\frac{\mathbb{P}(T=t_j)}{\sum\limits_{k\geq j}\mathbb{P}(T=t_k)}.
+$$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Estimator for the discrete hazard function
+
+- Let $d_j$ be the number of deaths at time $t_j$, and $n_j$ be the number of persons in the risk set prior to the time $t_j$.
+
+- Stress that all persons **censored** (i.e. excluded from the observation) before time $t_j$ are not counted in $n_j$.
+
+- We assume also that any person censored at time $t_j$ is actually censored immediately after that time, and hence is counted in $n_j$.
+
+- The estimator for $\lambda_j$ is then
+$$
+\hat{\lambda}_j=\frac{d_j}{n_j}.
+$$ {#eq-est_for_la_j}
+
+- We will see below why this estimator is relevant.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Discrete survival function
+
+- Since $S(t)=1-F(t)$, the survival function $S(t)$ is also constant on each $[t_j,t_{j+1})$, $j\geq 1$: namely, for $t\in [t_j,t_{j+1})$,
+$$
+\begin{aligned}
+S(t)&=\mathbb{P}(T>t)=\mathbb{P}(T>t_j)\\
+& = \mathbb{P}(T>t_j\mid T>t_{j-1})\mathbb{P}(T>t_{j-1})\\
+& = \mathbb{P}(T>t_j\mid T>t_{j-1})\\
+&\qquad\times \mathbb{P}(T>t_{j-1}\mid T>t_{j-2})\mathbb{P}(T>t_{j-2})\\
+& = (1-\lambda_j)(1-\lambda_{j-1})\ldots
+(1-\lambda_{2})\mathbb{P}(T>t_{1})\\
+&= \prod_{i=1}^j (1-\lambda_i),
+\end{aligned}
+$$ {#eq-survdiscr}
+where we used that $t_1$ is the first recorded moment of time, i.e. $T\geq t_1$, hence,
+$$
+\mathbb{P}(T>t_{1})=1-\mathbb{P}(T=t_{1})=1-\lambda_1.
+$$
+
+- Therefore, the value of $S(t)$ on the interval $t\in[t_{j},t_{j+1})$ is the value on the previous interval $[t_{j-1},t_j)$ multiplied by $1-\lambda_j$.
+
+- One can aso rewrite ([-@eq-survdiscr]) as follows:
+$$
+S(t)=\prod_{j:t_j\leq t} (1-\lambda_j).
+$$ {#eq-survdiscr1}
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Kaplan--Meier estimate of the survival function
+
+- **Kaplan--Meier estimate** $\hat{S}(t)$ of the survival function $S(t)$ is just the replacing of $\lambda_i$ in ([-@eq-survdiscr1]) by $\hat{\lambda}_j$ given by ([-@eq-est_for_la_j]):
+$$
+\hat{S}(t)=\prod_{j:t_j\leq t} (1-\hat{\lambda_j})=\prod_{j:t_j\leq t} \Bigl(1-\frac{d_j}{n_j}\Bigr).
+$$ {#eq-KMest}
+
+- We are going to discuss now in which sense $\hat{\lambda}_j$ and $\hat{S}(t)$ are relevant estimators.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-caution icon=false}
+
+## `{r} sec`.`{r} cur` Definition: Likelihood
+
+Let $X:\Omega\to S$ be a discrete random variable dependent on a parameter. Consider the probability that $X=x\in S$ given the specific value $\theta$ of the parameter. It can be denoted $\mathbb{P}_\theta(X=x)$, or $\mathbb{P}(X=x\mid \theta)$ (despite $\theta$ does not need to be random).
+
+The **likelihood function** is the function $\mathcal{L}(\theta\mid x)$ of $\theta$ which depends on $x$, and it is given by
+$$
+\mathcal{L}(\theta\mid x)=\mathbb{P}(X=x\mid \theta).
+$$
+We say that $\mathcal{L}$ is the likelihood function, **given the outcome** $x$ of the random variable $X$.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-tip icon=false}
+
+## `{r} sec`.`{r} cur` Remark:  Likelihood is not probability
+
+Stress that $\mathcal{L}(\theta \mid x)$ is not $\mathbb{P}(\theta \mid X=x)$. First, the latter object does not have sense if $\theta$ is not random. However, even for a random variable $\theta$,
+$$
+\begin{aligned}
+\mathbb{P}(\theta=\theta_0\mid X=x)&=
+\frac{\mathbb{P}( X=x\mid \theta=\theta_0) \mathbb{P}(\theta=\theta_0)}{\mathbb{P}(X=x)}\\&= \mathcal{L}(\theta_0)\frac{\mathbb{P}(\theta=\theta_0)}{\mathbb{P}(X=x)},
+\end{aligned}
+$$
+according to Bayes' theorem.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Likelihood function of the data
+
+- Fix $j\geq 1$, and consider the random variable $X$ that is the vector of all $d_i$ and $n_i$ for $1\leq i\leq j$.
+
+- Let $\theta$ be the vector of all $\lambda_i$, $1\leq i\leq j$. Then
+$$
+\begin{aligned}
+\mathcal{L}(\theta\mid X)&=\mathbb{P}\bigl(X=(d_i,n_i:i\leq j)\bigm\vert \theta=(\lambda_i:i\leq j)\bigr)
+\\&= \prod_{i=1}^j \binom{n_i}{d_i}\lambda_i^{d_i}(1-\lambda_i)^{n_i-d_i}.
+\end{aligned}
+$$
+
+- A natural question is to find the **maximal likelihood**:
+$$
+\theta_*=\mathrm{argmax}\, \mathcal{L}(\theta\mid X),
+$$
+i.e. $\mathcal{L}(\theta_*\mid X)=\max\limits_{\theta} \mathcal{L}(\theta\mid X)$.
+
+
+
+- The maximal likelihood is **the value of the parameter that maximizes the probability to observe the data**.
+
+- Since logarithm is an increasing function,
+$$
+\mathrm{argmax}\, \mathcal{L}(\theta\mid X)=\mathrm{argmax}\, \ln \mathcal{L}(\theta\mid X).
+$$
+
+- We have
+$$
+\begin{aligned}
+\ln \mathcal{L}(\theta\mid X)&=
+\sum_{i=1}^j \bigl(d_i\ln \lambda_i + (n_i-d_i)\ln (1-\lambda_i)\bigr)\\
+&\quad +\sum_{i=1}^j\ln\binom{n_i}{d_i}.
+\end{aligned}
+$$
+
+- The last summand is a constant in $\theta$ (for the given data $X$), hence it will not influence the maximal likelihood. One has
+$$
+\begin{aligned}
+\frac{\partial \ln \mathcal{L}(\theta\mid X)}{\partial \lambda_i} =\frac{d_i}{\lambda_i} - \frac{n_i-d_i}{1-\lambda_i}.
+\end{aligned}
+$$
+
+- The derivative is $0$ for $\lambda_i= \dfrac{d_i}{n_i}$.
+
+- Moreover, it can be checked that
+$$
+\theta = \Bigl(\dfrac{d_i}{n_i}\Bigr)_{i\leq j}=(\hat{\lambda}_i)_{i\leq j}
+$$
+is indeed the point of maximum of $\ln \mathcal{L}(\theta\mid X)$.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Nelson--Aalen estimate of the integrated hazard
+
+- Let $\mu_t$ be the hazard function (a.k.a. the force of mortality). Then the function
+$$
+\Lambda_t:=\int_0^t\mu_s\,ds
+$$
+is called the **integrated hazard** function.
+
+- Recall that
+$$
+S_x(t)={}_{t}p_{x}=\exp\biggl(-\int_0^t\mu_{x+s}\,ds\biggr),
+$$
+and $S(t)=S_0(t)=\mathbb{P}(T>t)$ (where $0$, recall, does not need to be an absolute age, but rather an initial time of the observation). Therefore,
+$$
+S(t)=\exp(-\Lambda_t).
+$$
+
+- The **Nelson--Aalen estimate** of the integrated hazard is
+$$
+\hat{\Lambda}_t = \sum_{j: t_j\leq t} \dfrac{d_j}{n_j};
+$$
+and the corresponding estimate of the survival function is
+$$
+\hat{S}(t)=\exp\bigl(-\hat{\Lambda_t}\bigr).
+$$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Likelihood function for continuous $T$
+
+For a continuous random variable $T$, the likelihood function is usually defined through their densities $f(t\mid\theta)$ rather than probabilities $F(T\mid\theta)$. In particular, if deaths happened at times $t_1,t_2,\ldots$ then (assuming that all lives had independent identical distributions):
+$$
+\mathcal{L}(\theta|\textrm{data}):=
+\prod_{t_j} f(t_j\mid \theta).
+$$
+If the time of death is a discrete random variable, its density is just the probability, i.e. the formula is agreed with the previous one.
+
+If, however, a live was censored at a time $t_k$, it means that it was still alive at that time, so we have to multiply the likelihood by the probability $S(t_k\mid \theta)$.
+
+Therefore:
+$$
+\mathcal{L}(\theta|\textrm{data}):=
+\prod_{\textrm{times of deaths}} f(t_j\mid \theta)\prod_{\textrm{times of censoring}} S(t_j\mid \theta).
+$$
+Since, by (1.11), $f(t)=S(t)\lambda(t)$, where $\lambda(t)=\mu_t$ is the hazard rate, we can also rewrite:
+$$
+\mathcal{L}(\theta|\textrm{data}):=
+\prod_{\textrm{times of deaths}} \lambda(t_j\mid \theta)\prod_{\textrm{all times}} S(t_j\mid \theta).
+$$
+
+Stress that some $t_j$ **may be equal**.
+
+A common use of such likelihood is for the estimation of parameters for the parametric models.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example
+
+Suppose we expect that certain data corresponds to the constant force of mortality $\mu_t\equiv \mu$ (or $\lambda(t)\equiv\mu$ in another notations). Then $S(t)=\exp(-\mu t)$, and we have (here $\theta=\mu$)
+$$
+\begin{aligned}
+\mathcal{L}(\mu) &= \prod_{\textrm{times of deaths}} \mu\prod_{\textrm{all times}} \exp(-\mu t) \\
+& = \mu^k \exp\Bigl(-\mu \sum_{j}t_j\Bigr),
+\end{aligned}
+$$
+where $k$ is the total number of the observed deaths and $\{t_j\}$ are times of **all events** (both deaths and censoring). Then
+$$
+l(\mu) = \ln \mathcal{L}(\mu) = k\ln \mu - \mu \sum_{j}t_j,
+$$
+and hence,
+$$
+l'(\mu) =\frac{k}{\mu} - \sum_{j}t_j, \quad L''(\mu) = -\frac{k}{\mu^2}<0.
+$$
+Thus,
+$$
+\mu_* = \frac{k}{\displaystyle\ \sum_{j}t_j\ }
+$$
+is the estimator for $\mu$ which maximize the likelihood.
+:::
+

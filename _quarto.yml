@@ -1,0 +1,49 @@
+project:
+  type: book
+  output-dir: _website
+  render:
+    - Ch-*.qmd
+    - index.qmd
+
+book:
+  title: "MA-365/M65 Lecture Notes"
+  page-navigation: false
+  back-to-top-navigation: false
+  description: "Lecture Notes for module MA-365/M65: Risk and Survival Models"
+  site-url: "https://finkelshtein.github.io/MA-x65/website/"
+  open-graph: true
+  page-footer:
+    right: "This page is built with [Quarto](https://quarto.org/)."
+    left: "&copy; Copyright 2024, Dmitri Finkelshtein"
+    center: "MA-365/M65: Lecture Notes"
+    background: "#D9E3E4"
+  chapters:
+    - index.qmd
+    - Ch-01.qmd
+    - Ch-02.qmd
+    - Ch-03.qmd
+    - Ch-04.qmd
+    - Ch-05.qmd
+    - Ch-06.qmd
+    - Ch-07.qmd
+    - Ch-08.qmd
+    - Ch-09.qmd
+    - Ch-10.qmd
+
+
+format:
+  html:
+    css: styles.css
+    mainfont: "Atkinson Hyperlegible"
+    code-copy: true
+    code-overflow: wrap
+    toc: false
+    number-sections: true
+    filters:
+      - parse-latex
+
+
+execute:
+  cache: true
+  freeze: auto
+  echo: false

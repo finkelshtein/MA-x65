@@ -1,0 +1,83 @@
+---
+format: html
+---
+
+```{r}
+#| echo: false
+sec = 2
+cur = 0
+```
+
+# Extreme value theory
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Maximum values
+
+Let $X_1,\ldots,X_n$ be independent identically distributed random variables (i.i.d. r.v.) with the cumulative distribution function $F(x)=F_X(x)$. Denote
+$$
+X_M=X_{M,n}= \max\{X_1,\ldots,X_n\}.
+$$ {#eq-2.1}
+Then
+$$
+\begin{aligned}
+\mathbb{P}(X_M\leq x) &= \mathbb{P}(X_1\leq x, \ldots, X_n\leq x) \\
+&= \mathbb{P}(X_1\leq x) \ldots \mathbb{P}(X_n\leq x) \\
+&= \bigl(\mathbb{P}(X\leq x)\bigr)^n = \bigl( F(x) \bigr)^n.
+\end{aligned}
+$$ {#eq-2.2}
+We can attempt to standardise the values of $X_M$: consider, for some $\alpha_n>0$ and $\beta_n\in\mathbb{R}$,
+$$
+\begin{aligned}
+\mathbb{P}\biggl(\frac{X_M-\alpha_n}{\beta_n}\leq x\biggr) &=\mathbb{P}(X_M\leq \beta_n x + \alpha_n)\\
+& = \bigl(F(\beta_n x + \alpha_n)\bigr)^n.
+\end{aligned}
+$$ {#eq-2.3}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-important icon=false}
+
+## `{r} sec`.`{r} cur` Theorem: Extreme value theorem (Fisher--Tippett--Gnedenko theorem)
+
+If there exists $\alpha_n>0$ and $\beta_n$, such that there exists
+$$
+G(x):= \lim_{n\to\infty}\bigl(F(\beta_n x + \alpha_n)\bigr)^n
+$$ {#eq-2.4}
+such that $G(x)$ is a non-degenerate cumulative distribution function (i.e. $G(x)$ is **not** simultaneously identically equal to $0$ for all $x<x_1$ and identically equal to $1$ for all $x>x_1$ with some $x_1$), then this limiting function $G(x)$ may have **only one of the two following forms** :
+
+- either, for some $\gamma\neq0$, $a,b\in\mathbb{R}$
+$$
+G(x):=G_\gamma(x) := \exp\Biggl(-\biggl(1+\gamma \frac{x-a}{b} \biggr)^{-\frac{1}{\gamma}}\Biggr),
+$$ {#eq-2.5}
+
+- or
+$$
+G(x):=G_0(x):=\exp\Biggl(-\exp\biggl(-\frac{x-a}{b} \biggr)\Biggr).
+$$ {#eq-2.6}
+
+Note that, for $\gamma<0$, $G_\gamma(x)$ corresponds to a Weibull distribution. For $\gamma>0$, the corresponding distribution is called Fr\'echet distribution, and for $\gamma=0$, it's called Gumbel distribution.
+
++--------+-------------------------+--------------+-------------------------+
+| $G(x)$ | Weibull \               | Gumbel \     | Fr'echet \              |
+|        | $\gamma<0$              | $\gamma=0$   | $\gamma>0$              |
++--------+-------------------------+--------------+-------------------------+
+| $F(x)$ | Uniform \               | Exponential\ | Burr\                   |
+|        | Beta                    | Gamma\       | Pareto\                 |
+|        |                         | Log-normal\  | $t$\                    |
+|        |                         | Normal\      | Log-gamma               |
+|        |                         | Weibull      |                         |
++--------+-------------------------+--------------+-------------------------+
+| $x$    | $x<a-\dfrac{b}{\gamma}$ | $\mathbb{R}$ | $x>a-\dfrac{b}{\gamma}$ |
++--------+-------------------------+--------------+-------------------------+
+
+:::

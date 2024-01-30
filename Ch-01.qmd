@@ -1,0 +1,919 @@
+---
+format: html
+---
+
+```{ojs}
+//| output: false
+mathfn = require('https://bundle.run/mathfn@1.1.0')
+
+```
+
+```{r}
+#| echo: false
+sec = 1
+cur = 0
+```
+
+# Loss distributions
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Probability distribution
+
+- Let $X:\Omega\to\mathbb{R}$ be a continuous random variable.
+
+- The **cummulative distribution function (CDF)** of $X$ is a **non-decreasing** function
+$$
+F_X(x)=\mathbb{P}(X\leq x)\in[0,1].
+$$ {#eq-1.1}
+
+- The **probability density function (PDF)** (a.k.a. **probability density**) of $X$ is
+$$
+f_X(x)=F'_X(x)\geq0.
+$$ {#eq-1.2}
+
+- Relation:
+$$
+\mathbb{P}(a\leq X \leq b) = \int_a^b f_X(x)\,dx=F_X(b)-F_X(a).
+$$ {#eq-1.3}
+
+- For a $k\in\mathbb{N}$, the **moment of order $k$** of $X$ is
+$$
+m_k=m_{k,X}=\mathbb{E}(X^k)=\int_\mathbb{R} x^k \, f_X(x)\,dx.
+$$ {#eq-kthmoment}
+
+- The **moment generator function (MGM)** is
+$$
+M_X(t)=\mathbb{E}(e^{tX})=\int_\mathbb{R} e^{tx} \, f_X(x)\,dx\geq0.
+$$ {#eq-1.5}
+
+- Relation:
+$$
+M_X(t)=1+\sum_{k=1}^\infty\frac{m_k}{k!}t^k.
+$$ {#eq-1.6}
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-tip icon=false}
+
+## `{r} sec`.`{r} cur` Remark
+
+- Recall that functions $\dfrac{1}{1+|x|^\beta}$ and $\dfrac{1}{(1+|x|)^\beta}$ are integrable on $\mathbb{R}$ iff $\beta>1$.
+
+- Note that if $f_X(x)$ is continuous on $\mathbb{R}$, it's integrable on arbitrary large interval $[-r,r]$, $r>0$. Therefore, if there exists $A>$ and $r>0$ such that
+$$
+|f_X(x)|\leq \frac{A}{1+|x|^\beta}, \qquad |x|>r,
+$$ {#eq-sufcondint}
+and $\beta>1$, then indeed, $\int\limits_{\mathbb{R}}|f_X(x)|\,dx<\infty$.
+
+- As a result, if
+$\beta>k+1$ in ([-@eq-sufcondint]), then the $k$-th moment $m_k$ in ([-@eq-kthmoment]) is well defined and finite.
+
+- Examples of such probability densities $f_X(x)$ may be, apart from the obvious $\dfrac{1}{1+|x|^\beta}$ and $\dfrac{1}{(1+|x|)^\beta}$ with $\beta>k+1$, also the considered below Weibull function
+$$
+f_X(x)=e^{-a |x|^b}
+$$ {#eq-Weibull}
+with **any** positive $a,b>0$.
+
+- Moreover, if in ([-@eq-Weibull])
+$b>1$, then
+$0< M_X(t)<\infty$.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The exponential distribution
+
+A random variable $X:\Omega\to\mathbb{R}$ has the **exponential distribution** with parameter $\lambda>0$ if its CDF is
+$$
+F(x)=1-e^{-\lambda x}, \quad x\geq0.
+$$ {#eq-1.9}
+
+Here and below, when we write a restriction on $x$, we mean that function is $0$ otherwise, i.e. here $F(x)=0$ for $x<0$.
+
+Then the PDF is
+$$
+f(x)=\lambda e^{-\lambda x}, \quad x\geq0.
+$$ {#eq-1.10}
+
+Next,
+$$
+\mathbb{E}(X)=\frac1{\lambda},
+$$ {#eq-1.11} 
+$$
+\mathrm{Var}(X)=\frac1{\lambda^2}= \bigl( \mathbb{E}(X) \bigr)^2,
+$$ {#eq-1.12}
+$$
+\mathbb{E}(X^2)=\frac2{\lambda^2}=2\bigl( \mathbb{E}(X) \bigr)^2.
+$$ {#eq-1.13}
+The MGM if defined for $t<\lambda$ only:
+$$
+M(t)=\biggl(1-\frac{t}{\lambda}\biggr)^{-1}=\frac{\lambda}{\lambda-t}.
+$$
+The notation is
+$$
+X\sim Exp(\lambda).
+$$ {#eq-1.14}
+
+:::
+
+::: {#fig-Exp}
+
+```{ojs}
+
+viewof l = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\lambda:` })
+
+viewof xmexp = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+ymaxexp = d3.max(d3.range(0, xmexp, 0.01).map(t => l*Math.exp(-l * t)))
+
+Plot.plot({
+  x: { domain: [-0.1, xmexp] },
+  y: { domain: [-0.1*ymaxexp, ymaxexp*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    Plot.line(
+      d3
+        .range(0, xmexp, 0.1)
+        .map(t => [
+          t,
+          l*Math.exp(-l * t)
+        ]),{
+        strokeWidth: 3,
+        stroke: "steelblue"
+      }
+    ),
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: 0 })
+  ]
+})
+```
+
+Graph of $f(x)=\lambda e^{-\lambda x}$
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The gamma distribution
+
+A random variable $X:\Omega\to\mathbb{R}$ has the **gamma distribution** with parameters $\alpha>0$ and $\lambda>0$ if its PDF is
+$$
+f(x)=\frac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha-1} e^{-\lambda x}, \quad x\geq0.
+$$ {#eq-1.15}
+Here
+$$
+\Gamma(\alpha):=\int_0^\infty t^{\alpha-1}e^{-t}\,dt, \quad \alpha>0
+$$ {#eq-1.16}
+is the gamma function.
+
+The following formulas hold:
+$$
+\mathbb{E}(X)=\frac{\alpha}{\lambda},
+$$ {#eq-1.17}
+$$
+\mathrm{Var}(X)=\frac{\alpha}{\lambda^2},
+$$ {#eq-1.18}
+$$
+M_X(t)=\biggl(1-\frac{t}{\lambda}\biggr)^{-\alpha}=\frac{\lambda^\alpha}{(\lambda-t)^\alpha}, \quad t<\lambda.
+$$ {#eq-1.19}
+The notation is
+$$
+X\sim \Gamma(\alpha,\lambda).
+$$
+
+:::
+
+::: {#fig-gamma}
+
+```{ojs}
+viewof a = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\alpha:` })
+viewof l2 = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\lambda:` })
+viewof xmgamma = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+function gamma(t,alpha,lambda){
+  return ((lambda**alpha)/mathfn.gamma(alpha))*(t**(alpha-1))*Math.exp(-lambda * t);
+}
+
+
+ymaxgamma = d3.max(d3.range(0.1, xmgamma, 0.001).map(t => gamma(t,a,l2)))
+
+
+Plot.plot({
+  x: { domain: [0.1, xmgamma] },
+  y: { domain: [-0.1*ymaxgamma, ymaxgamma*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    Plot.line(
+      d3
+        .range(0,xmgamma, 0.01)
+        .map(t => [t, gamma(t,a,l2)]),{
+        strokeWidth: 3,
+        stroke: "steelblue"
+      }
+    ),
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: 0 })
+  ]
+})
+```
+
+Graph of $f(x)=\dfrac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha-1} e^{-\lambda x}$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The normal distribution
+
+A random variable $X:\Omega\to\mathbb{R}$ has the **normal distribution** with the mean $\mu$ and the variance $\sigma^2$ if
+$$
+f_X(x)=\frac1{\sigma\sqrt{2\pi}}e^{-\frac1{2\sigma^2}(x-\mu)^2}. 
+$$ {#eq-1.20}
+Indeed,
+$$
+\mathbb{E}(X)=\mu, \quad \mathrm{Var}(X)=\sigma^2.
+$$ {#eq-1.21}
+The MGF is defined now everywhere:
+$$
+M_X(t)=e^{\mu t +\frac12 \sigma^2 t^2}, \quad t\in\mathbb{R}.
+$$ {#eq-1.22}
+Notation
+$$
+X\sim N(\mu,\sigma^2).
+$$
+:::
+
+::: {#fig-normal}
+
+```{ojs}
+viewof mu = Inputs.range([-0.7*xmgauss, 0.7*xmgauss], { value: 0, step: 0.001, label: tex`\mu:` })
+viewof sigma = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\sigma:` })
+viewof xmgauss = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+function gauss(t,mu,sigma){
+  return Math.exp(-(1/(2*sigma**2))*(t-mu)**2)/(sigma*Math.sqrt(2*Math.PI));
+}
+
+ymaxgauss = d3.max(d3.range(-xmgauss, xmgauss, 0.01).map(t => gauss(t,mu,sigma)))
+
+Plot.plot({
+  x: { domain: [-xmgauss, xmgauss] },
+  y: { domain: [-ymaxgauss*0.1, ymaxgauss*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    Plot.line(
+      d3
+        .range(-xmgauss, xmgauss, 0.01)
+        .map(t => [t, gauss(t,mu,sigma)]),{
+        strokeWidth: 3,
+        stroke: "steelblue"
+      }
+    ),
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: 0 })
+  ]
+})
+```
+
+Graph of $f_X(x)=\dfrac1{\sigma\sqrt{2\pi}}e^{-\frac1{2\sigma^2}(x-\mu)^2}$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The lognormal distribution
+
+A random variable $X:\Omega\to{(0,\infty)}$ has the **lognormal distribution** with parameters $\mu$ and $\sigma^2$ iff
+$$
+\ln X \sim N(\mu,\sigma^2).
+$$ {#eq-1.23}
+Equivalently, if $Z\sim N(\mu,\sigma^2)$, then
+$X=e^Z$.
+
+Notation:
+$$
+X\sim\ln N (\mu,\sigma^2).
+$$
+
+Then
+$$
+\mathbb{E}(X)= e^{\mu+\frac12\sigma^2},
+$$ {#eq-1.24}
+$$
+\mathrm{Var}(X)=e^{2\mu+\sigma^2}\left( e^{\sigma^2} -1\right),
+$$ {#eq-1.25}
+$$
+f_X(x)= \frac{1}{x\sigma\sqrt{2\pi}}\exp\biggl(- \frac{(\ln x -\mu)^2}{2\sigma^2}\biggr)
+$$ {#eq-1.26} 
+:::
+
+::: {#fig-lognormal}
+
+```{ojs}
+viewof mu2 = Inputs.range([0, xmloggauss*0.5], { value: 0, step: 0.001, label: tex`\mu:` })
+viewof sigma2 = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\sigma:` })
+viewof xmloggauss = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+function loggauss(t,mu,sigma){
+  return Math.exp(-(1/(2*sigma**2))*(Math.log(t)-mu)**2)/(t*sigma*Math.sqrt(2*Math.PI));
+}
+
+ymaxloggauss = d3.max(d3.range(0.01, xmloggauss, 0.001).map(t => loggauss(t,mu2,sigma2)))
+
+Plot.plot({
+  x: { domain: [0.1,xmloggauss] },
+  y: { domain: [-ymaxloggauss*0.1,  ymaxloggauss*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    Plot.line(
+      d3
+        .range(0.1, xmloggauss, 0.01)
+        .map(t => [t, loggauss(t,mu2,sigma2)]),{
+        strokeWidth: 3,
+        stroke: "steelblue"
+      }
+    ),
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: 0 })
+  ]
+})
+```
+
+Graph of $f_X(x)= \dfrac{1}{x\sigma\sqrt{2\pi}}\exp\biggl(- \frac{(\ln x -\mu)^2}{2\sigma^2}\biggr)$
+
+:::
+
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Pareto distribution
+
+A random variable $X$ has the two-parameter Pareto distribution with parameters $\alpha>0$ and $\lambda>0$, if
+$$
+F_X(x)=1-\biggl(\frac{\lambda}{\lambda+x}\biggr)^\alpha, \qquad x\geq0.
+$$ {#eq-1.27}
+Notation $X\sim Pa(\alpha,\lambda)$.
+
+Then
+$$
+f_X(x)=\frac{\alpha\lambda^\alpha}{(\lambda+x)^{\alpha+1}},
+$$ {#eq-1.28}
+and, {for $\alpha>1$},
+$$
+\mathbb{E}(X)=\frac{\lambda}{\alpha-1}
+$$ {#eq-1.29}
+A modification of the Pareto distribution is the Burr distribution with additional parameter $\gamma>0$
+$$
+F_{Burr}(x)=F_{Pareto}(x^\gamma)=1-\biggl(\frac{\lambda}{\lambda+x^\gamma}\biggr)^\alpha.
+$$ {#eq-1.30}
+:::
+
+::: {#fig-pareto}
+
+```{ojs}
+viewof ap = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`\alpha:` })
+viewof lp = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`\lambda:` })
+viewof xmpareto = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+function pareto(t,alpha,lambda){
+  return alpha*lambda**alpha*(t+lambda)**(-1-alpha);
+}
+
+ymaxpareto = d3.max(d3.range(0.1, xmpareto, 0.01).map(t => pareto(t,ap,lp)))
+
+Plot.plot({
+  x: { domain: [0.1,xmpareto] },
+  y: { domain: [-ymaxpareto*0.1,  ymaxpareto*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    Plot.line(
+      d3
+        .range(0.1, xmpareto, 0.01)
+        .map(t => [t, pareto(t,ap,lp)]),{
+        strokeWidth: 3,
+        stroke: "steelblue"
+      }
+    ),
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: 0 })
+  ]
+})
+```
+
+Graph of $f_X(x)= \dfrac{\alpha\lambda^\alpha}{(\lambda+x)^{\alpha+1}}$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The Weibull distribution
+
+For $a>0$, $b>0$, we denote $X\sim W(a,b)$ iff
+$$
+F_X(x)=1-e^{-a x^b},
+$$ {#eq-1.31}
+$$
+f_X(x)=ab x^{b-1}e^{-a x^b},
+$$ {#eq-1.32}
+$$
+\mathbb{E}(X)=\Gamma\biggl(1+\frac{1}{b}\biggr)a^{-\frac{1}{b}}.
+$$ {#eq-1.33}
+:::
+
+::: {#fig-weibull}
+
+```{ojs}
+viewof aw = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`a:` })
+viewof bw = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`b:` })
+viewof xmweibull = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+function weibull(t,a,b){
+  return a*b*t**(b-1)*Math.exp(-a*t**b);
+}
+
+ymaxweibull = d3.max(d3.range(0.1, xmweibull, 0.01).map(t => weibull(t,aw,bw)))
+
+Plot.plot({
+  x: { domain: [0.1,xmweibull] },
+  y: { domain: [-ymaxweibull*0.1,  ymaxweibull*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    Plot.line(
+      d3
+        .range(0.1, xmweibull, 0.01)
+        .map(t => [t,  weibull(t,aw,bw)]),{
+        strokeWidth: 3,
+        stroke: "steelblue"
+      }
+    ),
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: 0 })
+  ]
+})
+```
+
+Graph of $f_X(x)= ab x^{b-1}e^{-a x^b}$
+
+:::
+
+:::: {#fig-comparison layout-nrow=3}
+
+::: {layout-ncol=2}
+
+```{ojs}
+import {legend, swatches} from "@d3/color-legend"
+
+
+viewof xmin = Inputs.range([0.1, xmax*0.9], { value: 0.1, step: 0.1, label: tex`x_\mathrm{min}` })
+
+viewof xmax = Inputs.range([1,1000], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
+
+viewof lexp = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\lambda_{Exp}:` })
+
+viewof agamma = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\alpha_{Gamma}:` })
+viewof lgamma = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\lambda_{Gamma}:` })
+
+viewof muG = Inputs.range([0.1, 10], { value: 0, step: 0.001, label: tex`\mu_{\mathcal{N}}:` })
+viewof sigmaG = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\sigma_{\mathcal{N}}:` })
+
+viewof logmu = Inputs.range([0.1, 10], { value: 0, step: 0.001, label: tex`\mu_{\log\mathcal{N}}:` })
+viewof logsigma = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\sigma_{\log\mathcal{N}}:` })
+
+viewof apareto = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`\alpha_{Pareto}:` })
+
+viewof lpareto = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`\lambda_{Pareto}:` })
+
+viewof aweibull = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`a_{Weibull}:` })
+
+viewof bweibull = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`b_{Weibull}:` })
+```
+
+```{ojs}
+viewof isExp = Inputs.toggle({label: "exponential",value: true})
+
+viewof isGamma = Inputs.toggle({label: "gamma",value: true})
+
+viewof isGauss = Inputs.toggle({label: "normal",value: true})
+
+viewof isLogGauss = Inputs.toggle({label: "lognormal",value: true})
+
+viewof isPareto = Inputs.toggle({label: "Pareto",value: true})
+
+viewof isWeibull = Inputs.toggle({label: "Weibull",value: true})
+```
+
+::: 
+
+```{ojs}
+
+yexp = d3.max(d3.range(xmin, xmax, 0.01).map(t => lexp*Math.exp(-lexp * t)))
+ygamma = d3.max(d3.range(xmin, xmax, 0.001).map(t => gamma(t,agamma,lgamma)))
+ygauss = d3.max(d3.range(xmin, xmax, 0.01).map(t => gauss(t,mu,sigma)))
+yloggauss = d3.max(d3.range(xmin, xmax, 0.001).map(t => loggauss(t,logmu,logsigma)))
+ypareto = d3.max(d3.range(xmin, xmax, 0.01).map(t => pareto(t,apareto,lpareto)))
+yweibull = d3.max(d3.range(xmin, xmax, 0.01).map(t => weibull(t,aweibull,bweibull)))
+
+tfull = d3.max([isExp?yexp:0, isGamma?ygamma:0, isGauss?ygauss:0, isPareto?ypareto:0, isWeibull?yweibull:0, isLogGauss?yloggauss:0])
+
+Plot.plot({
+  x: { domain: [xmin, xmax] },
+  y: { domain: [-tfull*0.1,  tfull*1.2] },
+  width: 640,
+  height: 240,
+  marks: [
+    (isExp == true)?Plot.line(
+      d3
+        .range(xmin, xmax, 0.01)
+        .map(t => [t, lexp*Math.exp(-lexp*t)]),{
+        strokeWidth: 3,
+        stroke: d3.schemeCategory10[0]
+      }
+    ):Plot.line(
+      d3
+        .range(0, 0.01, 0.01)
+        .map(t => [t, t]),{
+        strokeWidth: 0,
+        stroke: d3.schemeCategory10[0]
+      }
+    ),
+    (isGamma == true)?Plot.line(
+      d3
+        .range(xmin, xmax, 0.01)
+        .map(t => [t, gamma(t,agamma,lgamma)]),{
+        strokeWidth: 3,
+        stroke: d3.schemeCategory10[1]
+      }
+    ):Plot.line(
+      d3
+        .range(0, 0.01, 0.01)
+        .map(t => [t, t]),{
+        strokeWidth: 0,
+        stroke: d3.schemeCategory10[0]
+      }
+    ),
+    (isGauss == true)?Plot.line(
+      d3
+        .range(xmin, xmax, 0.01)
+        .map(t => [t, gauss(t,muG,sigmaG)]),{
+        strokeWidth: 3,
+        stroke: d3.schemeCategory10[2]
+      }
+    ):Plot.line(
+      d3
+        .range(0, 0.01, 0.01)
+        .map(t => [t, t]),{
+        strokeWidth: 0,
+        stroke: d3.schemeCategory10[0]
+      }
+    ),
+    (isLogGauss == true)?Plot.line(
+      d3
+        .range(xmin, xmax, 0.01)
+        .map(t => [t, loggauss(t,logmu,logsigma)]),{
+        strokeWidth: 3,
+        stroke: d3.schemeCategory10[3]
+      }
+    ):Plot.line(
+      d3
+        .range(0, 0.01, 0.01)
+        .map(t => [t, t]),{
+        strokeWidth: 0,
+        stroke: d3.schemeCategory10[0]
+      }
+    ),
+    (isPareto == true)?Plot.line(
+      d3
+        .range(xmin, xmax, 0.01)
+        .map(t => [t, pareto(t,apareto,lpareto)]),{
+        strokeWidth: 3,
+        stroke: d3.schemeCategory10[4]
+      }
+    ):Plot.line(
+      d3
+        .range(0, 0.01, 0.01)
+        .map(t => [t, t]),{
+        strokeWidth: 0,
+        stroke: d3.schemeCategory10[0]
+      }
+    ),
+    (isWeibull == true)?Plot.line(
+      d3
+        .range(xmin, xmax, 0.01)
+        .map(t => [t,  weibull(t,aweibull,bweibull)]),{
+        strokeWidth: 3,
+        stroke: d3.schemeCategory10[5]
+      }
+    ):Plot.line(
+      d3
+        .range(0, 0.01, 0.01)
+        .map(t => [t, t]),{
+        strokeWidth: 0,
+        stroke: d3.schemeCategory10[0]
+      }
+    ),
+      Plot.ruleX([xmin]),
+      Plot.ruleY([0]),
+      Plot.axisX({ y: 0 }),
+      Plot.axisY({ x: xmin })
+  ]
+})
+```
+
+
+```{ojs}
+
+swatches({
+  color: d3.scaleOrdinal([tex`\displaystyle f_X(x)=\lambda e^{-\lambda x}`, tex`\displaystyle f_X(x)=\frac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha-1} e^{-\lambda x}`, tex`\displaystyle f_X(x)=\frac1{\sigma\sqrt{2\pi}}e^{-\frac1{2\sigma^2}(x-\mu)^2}`, tex`\displaystyle f_X(x)= \frac{1}{x\sigma\sqrt{2\pi}}\exp\biggl(- \frac{(\ln x -\mu)^2}{2\sigma^2}\biggr)`, tex`\displaystyle f_X(x)=\frac{\alpha\lambda^\alpha}{(\lambda+x)^{\alpha+1}}`, tex`\displaystyle f_X(x)=ab x^{b-1}e^{-a x^b}`], d3.schemeCategory10)
+    })
+```
+
+Comparison of right tails for the density functions
+
+::::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Cheracterisations
+
+A random variable is uniquely determined by either of CDF, PDF, MGF. Note that the sequence of all moments, in general, does not determine the distribution uniquely (Hamburger moment problem).
+
+Relations:
+$$
+f_X(x) = F'_X(x), 
+$$ {#eq-1.34}
+$$
+F_X(x)  = \int_{-\infty}^x f_x(y)\,dy,
+$$ {#eq-1.35}
+$$
+m_{k,X} = M_X^{(k)}(0).
+$$ {#eq-1.36}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Likelihood
+
+Let $X:\Omega\to\mathbb{R}$ be a random variable whose distribution depends on a parameter $\theta\in\mathbb{R}$.
+
+Suppose that we observe the data $x_1,\ldots,x_n$ which is the output of this random variable $X$ in course of $n$ independent trials.
+
+In other words, we can say that we observe that i.i.d.r.v. $X_1,\ldots, X_n$ with $X_i\sim X$, $1\leq i\leq n$, take certain values: $X_1=x_1,\ldots, X_n=x_n$.
+
+The **likelihood**, or **likelihood function**, is the function $\mathcal{L}(\theta)=\mathcal{L}(\theta\mid x_1,\ldots,x_n)$ of the unknown parameter $\theta$ (given the observed data $x_1,\ldots,x_n$) which is equal to:
+
+- (if $X$ is a discrete random variable)
+the probability to observe this data (given the value of the parameter $\theta$):
+$$
+\begin{aligned}
+\mathcal{L}(\theta)&=\mathcal{L}(\theta\mid x_1,\ldots,x_n)\\
+:&=\mathbb{P}(X_1=x_1,\ldots,X_n=x_n\mid \theta)
+\\&= \mathbb{P}(X_1=x_1\mid \theta)\ldots \mathbb{P}(X_n=x_n\mid \theta).
+\end{aligned}
+$$ {#eq-1.37}
+
+- (if $X$ is a continuous random variable with the PDF $f_X(x)=f_X(x\mid\theta)$)
+$$
+\begin{aligned}
+\mathcal{L}(\theta)&=\mathcal{L}(\theta\mid x_1,\ldots,x_n)\\
+:&=f_X(x_1\mid\theta)f_X(x_2\mid\theta)\ldots f_X(x_n\mid\theta).
+\end{aligned}
+$$ {#eq-1.38}
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Maximum likelihood estimator
+
+The **maximum likelihood estimator**$\theta_*$ of the parameter $\theta$ is the argument of the maximum of the likelihood function:
+$$
+\theta_*=\mathop{\mathrm{argmax}}_\theta\mathcal{L}(\theta),
+$$ {#eq-1.39}
+that means that
+$$
+\mathcal{L}(\theta_*) = \max_{\theta}\mathcal{L}(\theta).
+$$ {#eq-1.40}
+
+The standard approach to find $\theta_*$ is to consider the **log-likelihood function**
+$$
+L(\theta):=L(\theta\mid x_1,\ldots,x_n)=\ln \mathcal{L}(\theta\mid x_1,\ldots,x_n).
+$$ {#eq-1.41}
+
+Thus, in the discrete case,
+$$
+L(\theta) = \ln \mathbb{P}(X_1=x_1\mid \theta)+ \ldots + \ln \mathbb{P}(X_n=x_n\mid \theta),
+$$ {#eq-1.42}
+whereas, in the continuous case
+$$
+L(\theta) = \ln f_X(x_1\mid\theta)+ \ldots + \ln f_X(x_n\mid\theta),
+$$ {#eq-1.43}
+
+Then $\theta_*$ is the point of maximum for both $\mathcal{L}$ and $L$:
+$$
+\theta_*=\mathop{\mathrm{argmax}}_\theta L(\theta)=\mathop{\mathrm{argmax}}_\theta\mathcal{L}(\theta).
+$$ {#eq-1.44}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example: Discrete case
+
+Let $X\sim Po(\lambda)$, i.e.
+$$
+\mathbb{P}(X=k)=\frac{\lambda^k}{k!}e^{-\lambda}, \quad k\geq0.
+$$
+Suppose we have a sample of $n$ values of $X$: $k_1,\ldots,k_n$, and we want to estimate $\lambda$ (here $\theta=\lambda$). Then
+$$
+\begin{aligned}
+\mathcal{L}(\lambda)&=\mathbb{P}(X=k_1\mid\lambda)\ldots \mathbb{P}(X=k_n\mid\lambda)\\
+& = \frac{\lambda^{k_1}}{k_1!}e^{-\lambda}\cdot\ldots\cdot \frac{\lambda^{k_n}}{k_n!}e^{-\lambda}\\
+& = \underbrace{\frac{1}{k_1!\ldots k_n!}}_{=: c>0}\lambda^{k_1+\ldots+k_n}e^{-\lambda n},
+\end{aligned}
+$$
+and therefore,
+$$
+\begin{aligned}
+L(\lambda)&=\ln\mathcal{L}(\lambda)
+\\& = \ln c + (k_1+\ldots+k_n)\ln\lambda-\lambda n.
+\end{aligned}
+$$
+Then
+$$
+L'(\lambda) = \frac{k_1+\ldots+k_n}{\lambda}-n,
+$$
+and hence, $L'(\lambda)=0$ iff
+$$
+{\lambda = \frac{k_1+\ldots+k_n}{n}}.
+$$
+
+Since
+$$
+L''(\lambda) = (L'(\lambda))'=-\frac{k_1+\ldots+k_n}{\lambda^2}<0,
+$$
+the found value $\lambda_* = \frac{k_1+\ldots+k_n}{n}$ is the point of maximum of $L$, hence, it is the maximum likelihood estimator for the parameter $\lambda$.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-tip icon=false}
+
+## `{r} sec`.`{r} cur` Remark:  Relation to the LLN
+
+Note that, by the law of large numbers (LLN), if $X_i\sim X\sim Po(\lambda)$, $i\in\mathbb{N}$, then
+$$
+\frac{X_1+\ldots+X_n}{n} \to \mathbb{E}(X)=\lambda, \qquad n\to\infty.
+$$
+In other words, the maximum likelihood estimator converges to the theoretical value is the size of the sample converges to infinity.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example: Continuous case
+
+Let $X\sim Exp(\lambda)$. Suppose we have a sample of $n$ values of $X$: $x_1,\ldots,x_n$. Then
+$$
+\begin{aligned}
+\mathcal{L}(\lambda) &= f_X(x_1\mid \lambda)\ldots f_X(x_n\mid \lambda)\\
+&=\lambda e^{-\lambda x_1}\ldots \lambda e^{-\lambda x_n}= \lambda^n e^{-\lambda(x_1+\ldots +x_n)}.
+\end{aligned}
+$$
+
+Therefore,
+$$
+\begin{aligned}
+L(\lambda)&= \ln \mathcal L(\lambda)
+\\&= n \ln \lambda - \lambda(x_1+\ldots +x_n),
+\end{aligned}
+$$
+so $L'(\lambda)=0$ iff
+$$
+\begin{gathered}
+\frac{n}{\lambda} -(x_1+\ldots +x_n)=0,\\
+{\lambda_*= \frac{n}{x_1+\ldots +x_n}}.
+\end{gathered}
+$$
+Note that $L''(\lambda)=-\dfrac{n}{\lambda^2}$, in particular, $L''(\lambda_*)<0$, i.e. $\lambda_*$ is indeed the maximum likelihood estimator for the parameter $\lambda$.
+
+Finally, note that if $X_i\sim X\sim Exp(\lambda)$, then, by LLN,
+$$
+\frac{X_1+\ldots+X_n}{n}\to \mathbb{E}(X)=\frac{1}{\lambda}, \qquad n\to\infty.
+$$
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The method of moments
+
+If the number of parameters is bigger than $1$, the maximum likelihood estimation may be challenging as one would need to find the point of maximum for a function of several variables (though it can be still effectively done numerically).
+
+Another method to estimate unknown parameters of the distribution is the **method of moments**. Namely, assuming that we have a sample of $n$ values $x_1,\ldots,x_n$ of a random variable $X$ which is believed to be followed a probability distribution which depends on $k$ unknown parameters $\theta=(\theta_1,\ldots,\theta_k)$.
+
+Then, we consider the first $k$ moments of the random variable $X$ (i.e. the moments of the population):
+$$
+m_j = \mathbb{E}(X^j\mid \theta), \qquad 1\leq j\leq k.
+$$
+
+Next, for the given data $x_1,\ldots,x_n$, we consider $k$ averaged moments (i.e. the moments of the sample):
+$$
+\overline{m}_j = \frac{1}{n}\sum_{l=1}^n x_l ^j, \qquad 1\leq j\leq k.
+$$
+
+After this, we need to equate $k$ quantities:
+$$
+m_j = \overline{m}_j, \qquad 1\leq j\leq k,
+$$
+to determine $k$ unknown parameters $\theta_1,\ldots,\theta_k$.
+:::
+

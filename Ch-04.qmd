@@ -1,0 +1,110 @@
+---
+format: html
+---
+
+```{r}
+#| echo: false
+sec = 4
+cur = 0
+```
+
+# Reinsurance
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Notations
+
+- $X$ is the gross claim amount random variable
+
+- $Y$ is the net claim amount (paid by the main insurer after receiving the reinsurance recovery)
+
+- $Z$ is the amount paid by the reinsurer
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example: Excess of loss reinsurance
+
+The insurer pays in full up to an amount $M$, the reinsurer pays all above $M$, if needed:
+$$
+Y=\begin{cases}
+X, & \text{if } X\leq M,\\
+M, & \text{if } X>M;
+\end{cases} \qquad Z=X-Y.
+$$
+Then
+$$
+\begin{aligned}
+m_{k,Y} &= \int_0^M x^k f_X(x)\,dx + M^k \mathbb{P}(X>M),\\
+M_Y(t)&= \int_0^M e^{tx}f_X(x)\,dx +e^{tM}\mathbb{P}(X>M),
+\end{aligned}
+$$
+and
+$$
+\begin{aligned}
+m_{k,Z} &= \int_M^\infty (x-M)^k f_X(x)\,dx, \\
+M_Z(t) &= \mathbb{P}(X\leq M) +\int_M^\infty e^{t(x-M)}f_X(x)\,dx.
+\end{aligned}
+$$
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Reinsurer's view
+
+In the conditions of the previous example, the reinsurer pays $Z$, evidently, only if $Z=X-Y>0$, otherwise, the reinsurer even does not know that a claim happened.
+
+Hence, the distribution function for reinsurer is
+$$
+\begin{aligned}
+F_Z(z)&=\mathbb{P}(Z\leq z\mid Z>0)=\mathbb{P}(X\leq z+M\mid X>M)\\
+&= \frac{\mathbb{P}(M<X\leq z+M)}{\mathbb{P}(X>M)}= \frac{F_X(z+M)-F_X(M)}{1-F_X(M)},
+\end{aligned}
+$$
+that looks familiar (see formula (1.1)).
+Then
+$$
+f_Z(z)= \frac{f_X(z+M)}{1-F_X(M)}, \quad z>0.
+$$
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example: Proportional reinsurance
+
+For $0<\alpha<1$, we set
+$$
+Y=\alpha X, \qquad Z=(1-\alpha)X.
+$$
+Then e.g.
+$$
+\begin{alignat*}{2}
+\mathbb{E}(Y)&=\alpha\mathbb{E}(X), &\qquad
+\mathbb{E}(Z)&=(1-\alpha)\mathbb{E}(X),\\
+\mathrm{Var}(Y)&=\alpha^2\mathrm{Var}(X), &\qquad
+\mathrm{Var}(Z)&=(1-\alpha)^2\mathrm{Var}(X).
+\end{alignat*}
+$$
+:::
+

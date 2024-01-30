@@ -1,0 +1,226 @@
+---
+format: html
+---
+
+```{r}
+#| echo: false
+sec = 3
+cur = 0
+```
+
+# Copulas
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-caution icon=false}
+
+## `{r} sec`.`{r} cur` Definition: Joint distribution
+
+Let $X:\Omega\to\mathbb{R}$ and $Y:\Omega\to\mathbb{R}$ be two random variables on the same probability space $(\Omega,\mathcal{A},\mathbb{P})$. The **joint (cummulative) distribution function** (joint CDF) of $X$ and $Y$ is
+$$
+F_{X,Y}(x,y):=\mathbb{P}(X\leq x, Y\leq y).
+$$ {#eq-3.1}
+It can be naturally extended to multivariate case: if $X_1,\ldots,X_N:\Omega\to\mathbb{R}$, then
+$$
+F_{X_1,\ldots,X_N}(x_1,\ldots,x_N):= \mathbb{P}(X_1\leq x_1,\ldots,X_N\leq x_N).
+$$ {#eq-3.2}
+If $X$ and $Y$ are continuous, the **joint probability density function** (joint PDF, a.k.a. joint density) is
+$$
+f_{X,Y}(x,y)=\frac{\partial^2}{\partial x\partial y} F_{X,Y}(x,y).
+$$ {#eq-3.3}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-caution icon=false}
+
+## `{r} sec`.`{r} cur` Definition: Marginal distribution
+
+Let $F_{X,Y}$ be the joint CDF of $X$ and $Y$. Then CDFs of $X$ and $Y$, $F_X$ and $F_Y$, are called **marginal distributions** of $F_{X,Y}$. The main relation between them is:
+$$
+\begin{aligned}
+F_X(x)&=\lim_{y\to\infty} F_{X,Y}(x,y)=:F_{X,Y}(x,\infty), \\
+F_Y(y)&=\lim_{x\to\infty} F_{X,Y}(x,y)=:F_{X,Y}(\infty,y).
+\end{aligned}
+$$ {#eq-3.4}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Further relations
+
+The following relations hold:
+$$
+F_{X,Y}(x,y) = \int_{-\infty}^x \int_{-\infty}^y f_{X,Y}(u,v)\,dv\,du;
+$$ {#eq-3.5}
+$$
+f_X(x)  = \int_\mathbb{R} f_{X,Y}(x,y)\,dy,
+$$ {#eq-3.6}
+$$
+f_Y(x)  = \int_\mathbb{R} f_{X,Y}(x,y)\,dx.
+$$ {#eq-3.7}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-caution icon=false}
+
+## `{r} sec`.`{r} cur` Definition: Copula
+
+Let $X$ and $Y$ be random variables with the joint CDF $F_{X,Y}$. The **copula** of $X$ and $Y$ is a function $C_{X,Y}:[0,1]\times[0,1]\to[0,1]$ such that
+$$
+C_{X,Y}\bigl[ F_X(x),F_Y(y) \bigr] = F_{X,Y}(x,y).
+$$ {#eq-3.8}
+In other words,
+$$
+C_{X,Y}[u,v] = F_{X,Y}\bigl( F_X^{-1}(u), F_Y^{-1}(v) \bigr)
+$$  {#eq-3.9}
+Note that $F_X^{-1}$ and $F_Y^{-1}$ are well-defined almost everywhere as $F_X$ and $F_Y$ are non-decreasing functions.
+Similarly, for random variables $X_1$, \ldots, $X_N$,
+$$
+C_{X_1,\ldots,X_N}[u_1,\ldots,u_N] = F_{X_1,\ldots,X_N}\bigl( F_{X_1}^{-1}(u_1), \ldots, F_{X_N}^{-1}(u_N) \bigr).
+$$ {#eq-3.10}
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Properties of copulas
+
+$C_{X,Y}[u,v]$ is a function non-decreasing in $u$ and non-decreasing in $v$, such that
+$$
+0\leq C_{X,Y}[u,v]\leq 1,
+$$ {#eq-3.11}
+$$
+C_{X,Y}[u,1]=u,
+$$ {#eq-3.12}
+$$
+C_{X,Y}[1,v]=v,
+$$ {#eq-3.13}
+$$
+C_{X,Y}[u,0]=C_{X,Y}[0,v]=0
+$$ {#eq-3.14}
+We can also introduce the **copula density function**:
+$$
+c_{X,Y}[u,v]=\frac{\partial^2}{\partial u\partial v}C_{X,Y}[u,v],
+$$ {#eq-3.15}
+then
+$$
+c_{X,Y}\bigl[F_X(x),F_Y(y)\bigr] = \frac{f_{X,Y}(x,y)}{f_X(x)\, f_Y(y)}.
+$$ {#eq-3.16}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-important icon=false}
+
+## `{r} sec`.`{r} cur` Theorem: Sklar's theorem
+
+Copulas always exist and, for continuous random variables, are unique.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Fundamental copulas
+
+- **Independence (or product) copula**.
+Consider $C[u,v]=uv$, then
+$$
+F_{X,Y}(x,y)=C[F_X(x),F_Y(y)]=F_X(x)F_Y(y),
+$$
+i.e. $X$ and $Y$ are independent random variables.
+
+- **Co-monotonic (or minimum) copula**.
+Consider $C[u,v]=\min\{u,v\}$.
+A typical example: $Y=X+\mathrm{const}$.
+
+- **Counter-monotonic (or maximum) copula**.
+Consider $C[u,v]=\max\{u+v-1,0\}$. A typical example $Y=-X$.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-important icon=false}
+
+## `{r} sec`.`{r} cur` Theorem: Fréchet--Hoeffding copula bounds
+
+For any copula $C:[0,1]\times[0,1]\to[0,1]$,
+$$
+\max\{u+v-1,0\} \leq C[u,v]\leq \min\{u,v\}.
+$$ {#eq-3.17}
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Archimedean copulas
+
+Let $\psi:[0,1]\to[0,\infty]$ is a continuous, strictly decreasing, convex function with $\psi(1)=0$. The corresponding **Archimedean copula** is
+$$
+C[u,v]=\psi^{[-1]}\bigl( \psi(u)+\psi(v)\bigr),
+$$ {#eq-3.18}
+where
+$$
+\psi^{[-1]}(x)=\begin{cases}
+\psi^{-1}(x), & \text{if } 0\leq x\leq \psi(0),\\
+0, & \text{if } \psi(0)<x\leq \infty.
+\end{cases}
+$$
+In particular, if $\psi(0)=\infty$ (i.e. $\lim\limits_{t\to0-}\psi(t)=\infty$), then $\psi^{[-1]}(x)=\psi^{-1}(x)$ for all $x$.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example: Gumbel copula
+
+For $\alpha\geq1$, we consider
+$$
+\psi(t)=\bigl( - \ln t \bigr)^\alpha.
+$$ {#eq-3.19}
+Then
+$$
+C[u,v]=\exp \biggl( -\Bigl( (-\ln u)^ \alpha + (-\ln v)^\alpha\Bigr)^{\frac1\alpha}\biggr).
+$$ {#eq-3.20}
+Note that, for $\alpha=1$, this becomes the independence copula.
+:::
+

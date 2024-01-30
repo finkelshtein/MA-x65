@@ -1,0 +1,132 @@
+---
+format: html
+---
+
+```{r}
+#| echo: false
+sec = 9
+cur = 0
+```
+
+# Exposed to risk
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Exposed to risk
+
+- The $1$-year "mortality rate"
+$$
+q_x={}_{1}q_{x}=\mathbb{P}(T\leq x+1 \mid T>x)
+$$
+depends naturally on the age $x$.
+
+- Sometimes one can ignore this dependence if the data uniform in age, or when we are interested in the time lives survived within the trial rather than in the absolute time (in this case we assumed that $x=0$).
+
+- In the latter case, we could still take into account the age, considering it as a covariate.
+
+- However, it is often important to deal with various ages, and numerous covariates become non-feasible.
+
+- A natural estimation for $\mu_x$ would be
+$$
+\hat{\mu}_x=\frac{\text{expected number of deaths of lives aged $x$}}{\text{number of lives aged $x$}},
+$$
+where both parts of the fraction are considered on time interval $[x,x+1)$.
+
+- The denominator, however, changes within the unit time (e.g. if time is measured in years, the number will decrease within the year).
+
+- The number of lives aged $x$ at the beginning of the year interval is called the **exposed to risk** and is denoted $E_x$.
+
+
+
+- On practice, one prefers to use an averaged number of lives within the year interval. This quantity is called the **central exposed to risk**, and is denoted $E_x^c$.
+
+- For example, if there are $100$ lives of age $x$ and if it is know that in average $1$ life dies within the next year, then $E_x^c=99.5$ (that corresponds to the "number" of lives at the center (middle) of the year time-interval, hence, the name).
+
+- However, in practice, we do not deal with lives of exactly the same age, hence, some lives at a moment of time $s$ may give an input to $E_x^c$, but at time $t>s$ they may impact $E_{x+1}^c$ if the birthday day took place during the time-interval $(s,t)$.
+
+- It is also important that the start of the trial (investigation) and end of the trial are not the birthday days, hence, the time-intervals when a particular life makes an input to a certain $E_x^c$ may vary.
+
+- Before considering an example, we formulate the following **principle of correspondence**:
+
+a life alive at time $t$ should be included in the (central) exposed to risk number $E_x$ (impact $E_x^c$) at age $x$ at time $t$ if and only if were that life to die immediately, they would be counted in the deaths number $d_x$ at age $x$.
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example
+Suppose that a mortality investigation covers the period $1$ January $2015$ to $31$ December $2017$. In this study, the "age" means "age last birthday". Consider the data about $2$ males involved in the study.
+
+```{=latex}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+DOB & Joining & Exit & Reason \\ \hline
+25/04/83 & 01/01/15 & 30/10/16 & D\\ \hline
+04/09/82 & 22/07/17 & 04/12/17 & C\\ \hline
+\end{tabular}
+```
+
+Therefore, the first male life joined the study at age $31$ last birthday. His life will be counted in the following central exposed to risk quantities at different moments of time (we assume here that the day of exit is not counted):
+
+\qquad $E_{31}^c$: from 01/01/15 to 24/04/15
+
+\qquad $E_{32}^c$: from 25/04/15 to 24/04/16
+
+\qquad $E_{33}^c$: from 25/04/16 to 29/10/16
+
+Similarly, the second male life joined the study at age $34$ last birthday. The contribution to the central exposed risk, hence, are:
+
+\qquad $E_{34}^c$: from 22/07/17 to 03/09/17
+
+\qquad $E_{35}^c$: from 04/09/17 to 03/12/17
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Census approximation to $E_x^c$
+
+- Let $P_{x,t}$ denote the number of lives under observation aged $x$ **last birthday**, at time $t$.
+
+- Suppose we have observation over $N+1$ calendar years of all deaths between ages $x$ and $x+1$.
+Then
+$$
+E_x^c = \int_0^{N+1} P_{x,t}\,dt.
+$$
+
+- Under the assumption that $P_{x,t}$ changes linearly in $t$ within each year, the value of $E_x^c$ can be approximated by the  *trapezium rule* :
+$$
+E_x^c\approx \frac12 \sum_{t=0}^{N} \bigl(P_{x,t}+P_{x,t+1}\bigr).
+$$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-tip icon=false}
+
+## `{r} sec`.`{r} cur` Remark
+
+Recall that, in the above, we used "age $x$" as the "age $x$ last birthday", the value of $d_x$ should be then calculated accordingly.
+
+One can also use the "nearest birthday" approach or the "next birthday" approach, each would require recalculation of $d_x$.
+:::
+

@@ -1,0 +1,15 @@
+{
+  "hash": "f6199da0e3fe91791e6334caefeaa489",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\nformat: html\n---\n\n::: {.cell}\n\n:::\n\n\n# Reinsurance\n\n\n::: {.cell}\n\n:::\n\n\n::: {.callout-note icon=false}\n\n## 4.1 Notations\n\n- $X$ is the gross claim amount random variable\n\n- $Y$ is the net claim amount (paid by the main insurer after receiving the reinsurance recovery)\n\n- $Z$ is the amount paid by the reinsurer\n\n:::\n\n\n::: {.cell}\n\n:::\n\n\n::: {.callout-warning icon=false}\n\n## 4.2 Example: Excess of loss reinsurance\n\nThe insurer pays in full up to an amount $M$, the reinsurer pays all above $M$, if needed:\n$$\nY=\\begin{cases}\nX, & \\text{if } X\\leq M,\\\\\nM, & \\text{if } X>M;\n\\end{cases} \\qquad Z=X-Y.\n$$\nThen\n$$\n\\begin{aligned}\nm_{k,Y} &= \\int_0^M x^k f_X(x)\\,dx + M^k \\mathbb{P}(X>M),\\\\\nM_Y(t)&= \\int_0^M e^{tx}f_X(x)\\,dx +e^{tM}\\mathbb{P}(X>M),\n\\end{aligned}\n$$\nand\n$$\n\\begin{aligned}\nm_{k,Z} &= \\int_M^\\infty (x-M)^k f_X(x)\\,dx, \\\\\nM_Z(t) &= \\mathbb{P}(X\\leq M) +\\int_M^\\infty e^{t(x-M)}f_X(x)\\,dx.\n\\end{aligned}\n$$\n:::\n\n\n::: {.cell}\n\n:::\n\n\n::: {.callout-note icon=false}\n\n## 4.3 Reinsurer's view\n\nIn the conditions of the previous example, the reinsurer pays $Z$, evidently, only if $Z=X-Y>0$, otherwise, the reinsurer even does not know that a claim happened.\n\nHence, the distribution function for reinsurer is\n$$\n\\begin{aligned}\nF_Z(z)&=\\mathbb{P}(Z\\leq z\\mid Z>0)=\\mathbb{P}(X\\leq z+M\\mid X>M)\\\\\n&= \\frac{\\mathbb{P}(M<X\\leq z+M)}{\\mathbb{P}(X>M)}= \\frac{F_X(z+M)-F_X(M)}{1-F_X(M)},\n\\end{aligned}\n$$\nthat looks familiar (see formula (1.1)).\nThen\n$$\nf_Z(z)= \\frac{f_X(z+M)}{1-F_X(M)}, \\quad z>0.\n$$\n:::\n\n\n::: {.cell}\n\n:::\n\n\n::: {.callout-warning icon=false}\n\n## 4.4 Example: Proportional reinsurance\n\nFor $0<\\alpha<1$, we set\n$$\nY=\\alpha X, \\qquad Z=(1-\\alpha)X.\n$$\nThen e.g.\n$$\n\\begin{alignat*}{2}\n\\mathbb{E}(Y)&=\\alpha\\mathbb{E}(X), &\\qquad\n\\mathbb{E}(Z)&=(1-\\alpha)\\mathbb{E}(X),\\\\\n\\mathrm{Var}(Y)&=\\alpha^2\\mathrm{Var}(X), &\\qquad\n\\mathrm{Var}(Z)&=(1-\\alpha)^2\\mathrm{Var}(X).\n\\end{alignat*}\n$$\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

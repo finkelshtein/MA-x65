@@ -1,0 +1,242 @@
+---
+format: html
+---
+
+```{r}
+#| echo: false
+sec = 8
+cur = 0
+```
+
+# Proportional hazards models
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Covariates
+
+**Covariates** are characteristics
+of the participants of the experiment under consideration. For example, age, sex, type of treatment, level of medication, severity of symptoms and so on.
+
+Mathematically, we represent the values of covariates as a vector $z$ with numerical components. Then e.g. the hazard rate $\lambda_t$ (a.k.a the force of mortality) depend on $z$: $\lambda_t=\lambda(t,z)$.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` Proportional hazards models
+
+A common assumption about hazard is that the dependence on time and on the covariates can be factorized (i.e.\ time and covariates are not "twisted"):
+$$
+\lambda(t,z)=\lambda_0(t)g(z).
+$$
+The function $\lambda_0(t)$ is called then the **baseline hazard**.
+
+This is called a **proportional hazard model** (in short, a **PH model**). The reason for the name is that the proportion of of hazard rates for different covariates does not depend on time:
+$$
+\frac{\lambda(t,z_1)}{\lambda(t,z_2)} = \frac{g(z_1)}{g(z_2)}.
+$$
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` A parametric PH model
+
+- A parametric PH model that uses the Gompertz distribution can be defined as follows.
+
+- We consider the hazard rate $\lambda_t=bc^t$, $c>0$, that depends on covariates vector $z$:
+$$
+\lambda(t,z)=b(z)c^t, \qquad b(z):=\exp(\beta\cdot z),
+$$
+where $\beta$ is a vector of **regression coefficients**, and $\beta\cdot z$ denotes the scalar (a.k.a. inner) product.
+
+- Since both $c>0$ and $b(z)>0$, it is useful also to consider
+$$
+\ln \lambda(t,z)=t\,\ln c+\beta\cdot z.
+$$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-note icon=false}
+
+## `{r} sec`.`{r} cur` The Cox PH model
+
+- The Cox PH models proposes the following form of the hazard function
+$$
+\lambda(t,z)=\lambda_0(t)\exp(\beta\cdot z).
+$$ {#eq-lin_regr}
+
+- $\lambda_0(t)$ is the  *baseline hazard*, $\beta$ is the vector of  *regression parameters*.
+
+
+
+- When $\beta$ is known (or found), one can get the ratio of hazards for different covariates:
+$$
+\frac{\lambda(t,z_1)}{\lambda(t,z_2)} = \exp(\beta\cdot (z_1-z_2)).
+$$
+This tells, in particular, how much larger is the force of mortality (a.k.a. hazard) for a covariate with respect to another one.
+
+- The traditional way to find (or rather, select) $\beta$ is to maximize the **partial likelihood**. Namely, let deaths are recorded at moments of time $t_j$, $1\leq j\leq k$, and suppose first that **there is one death at each** $t_j$, i.e. $d_j=1$ for all $j$. Let $z_j$ be the covariates vector of the life died at time $t_j$. Let $R(t_j)$ be the set of all lives at risk to die prior to time $t_j$, $1\leq j\leq k$. The partial likelihood is defined then as follows:
+$$
+L(\beta) = \prod_{j=1}^k \frac{\exp(\beta\cdot z_j)}{\sum\limits_{i\in R_{(t_j)}}\exp(\beta\cdot z_i)}.
+$$
+
+- In the case when some $d_j>1$, the exact calculations are complicate, hence the following **Breslow's approximation** is in use:
+$$
+L(\beta) = \prod_{j=1}^k \frac{\exp(\beta\cdot z_j)}{\Bigl(\sum\limits_{i\in R_{(t_j)}}\exp(\beta\cdot z_i)\Bigr)^{d_j}}.
+$$
+
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-tip icon=false}
+
+## `{r} sec`.`{r} cur` Remark
+
+It is common to include all censored at time $t_j$ lives to $R(t_j)$, assuming that the censoring occurs just after the observed deaths.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-warning icon=false}
+
+## `{r} sec`.`{r} cur` Example 
+
+A study is being conducted, using the Cox regression model, into how going to gym affects a patient's future lifetime after they had a serious heart attack.
+The Cox model is considered with a parameter $\beta\in\mathbb{R}$ and the covariate $z=1$ if the patient was a gym-visitor, and $z=0$ otherwise. The data about $9$ patients is available in the table. Patients are labelled as "censored" if they were still alive at the end of the study of if their death was not considered to be attributable to the decease. Time is measured in weeks.
+
+```{=latex}
+\begin{tabular}{ |c|c|c|c| }
+\hline
+Patient & Time to death & Gym & Censored\\ \hline
+1 & 3 			& No 	& Yes \\ \hline
+2 & 5 			& Yes 	& Yes \\ \hline
+3 & 9 			& Yes 	& No \\ \hline
+4 & still alive	& No 	& Yes \\ \hline
+5 & 6 			& No 	& No \\ \hline
+6 & 7 			& Yes 	& Yes \\ \hline
+7 & 4 			& Yes 	& No \\ \hline
+8 & 8 			& Yes 	& Yes \\ \hline
+9 & 10 			& Yes 	& Yes \\ \hline
+\end{tabular}
+```
+
+We are going to find the partial likelihood function of $\beta$ and the maximal partial likelihood estimator $\beta^*$.
+
+Sort the table by the time of death and highlight the non-censored deaths:
+
+```{=latex}
+\begin{tabular}{ |c|c|c|c| }
+\hline
+Patient & Time to death & Gym & Censored\\ \hline
+1 & 3 	& No 	& Yes \\ \hline
+\textbf{7} & \textbf{4}			& \textbf{Yes} 	& \textbf{No} \\ \hline
+2 & 5 	& Yes 	& Yes \\ \hline
+\textbf{5} & \textbf{6} & \textbf{No} 	& \textbf{No} \\ \hline
+6 & 7 			& Yes 	& Yes \\ \hline
+8 & 8 			& Yes 	& Yes \\ \hline
+\textbf{3} & \textbf{9} 			& \textbf{Yes} 	& \textbf{No} \\ \hline
+9 & 10 			& Yes 	& Yes \\ \hline
+4 & still alive	& No 	& Yes \\ \hline
+\end{tabular}
+```
+
+Patient 7 (a gym-visitor) died first after 4 weeks; before time 4 there are 6 gym-visitors and 2 non-gym-visitors. It gives the factor
+$$
+	L_1(\beta)=\frac{e^{\beta\cdot1}}{6e^{\beta\cdot1}+2e^{\beta\cdot0}}=\frac{e^\beta}{6e^\beta+2}.
+$$
+		
+Patient 5 (a non-gym-visitor) died the second, at time 6; before time 6 remained 4 gym-visitors and 2 non-gym-visitors. It gives the factor
+$$
+	L_2(\beta)=\frac{e^{\beta\cdot0}}{4e^{\beta\cdot1}+2e^{\beta\cdot0}}=\frac{1}{4e^\beta+2}.
+$$
+
+Patient 3 (a gym-visitor) died the last among non-censored, at time 9. By that time, there were 2 gym-visitors and 1 non-gym-visitor, it gives
+$$
+	L_3(\beta)=\frac{e^{\beta\cdot1}}{2e^{\beta\cdot1} +e^{\beta\cdot0}}=\frac{e^\beta}{2e^\beta +1}.	
+$$
+Therefore,
+$$
+\begin{aligned}
+L(\beta) &= 	L_1(\beta)L_2(\beta)L_3(\beta)=\frac{e^\beta}{6e^\beta+2}
+\frac{1}{4e^\beta+2}
+\frac{e^\beta}{2e^\beta +1}\\&=\frac{e^{2\beta}}{4(3e^\beta+1)(2e^\beta+1)^2}.
+\end{aligned}
+$$
+
+The point of maximum of $L(\beta)$ is the same as for
+$$
+\begin{aligned}
+	l(\beta):&= \ln \frac{e^{2\beta}}{(3e^\beta+1)(2e^\beta+1)^2}\\& = 2\beta - \ln(3e^\beta+1)- 2\ln (2e^\beta+1).
+\end{aligned}
+$$
+We have
+$$
+\begin{aligned}
+	l'(\beta)&=2-\frac{3e^\beta}{3e^\beta+1}-2\cdot \frac{2e^\beta}{2e^\beta+1}\\
+	&= \frac{2(3e^\beta+1)(2e^\beta+1)-3e^\beta(2e^\beta+1)-4e^\beta(3e^\beta+1)}{(3e^\beta+1)(e^\beta+1)^2},
+\end{aligned}
+$$
+thus $l'(\beta)=0$ implies
+$$
+	-6e^{2\beta}+3e^\beta+2=0.	
+$$
+
+Taking $x=e^\beta>0$, we get
+$$
+	6x^2-3x-2=0, \quad x=\frac{3+\sqrt{57}}{12},\quad
+	\beta^*=\ln \frac{3+\sqrt{57}}{12}.	
+$$
+
+Check that this is indeed the point of maximum:
+$$
+\begin{aligned}
+	L''(\beta) &=-3\cdot \frac{e^\beta (3e^\beta+1) -3e^\beta\cdot e^\beta}{(3e^\beta+1)^2}\\&\quad -	4\cdot \frac{e^\beta (2e^\beta+1) -2e^\beta\cdot e^\beta}{(2e^\beta+1)^2}\\
+	&= -\frac{3}{(3e^\beta+1)^2}-
+	\frac{4}{(2e^\beta+1)^2}<0
+\end{aligned}
+$$
+for all $\beta$, in particular, for $\beta=\beta^*$. Hence $\beta^*$ is the point of maximum.
+:::
+
+```{r}
+#| echo: false
+cur = cur + 1
+```
+
+::: {.callout-tip icon=false}
+
+## `{r} sec`.`{r} cur` Remark
+
+If the choose the found value $\beta=\beta^*$ for the hazard rate ([-@eq-lin_regr]), then
+$$
+\frac{\lambda(t,z=1)}{\lambda(t,z=0)}= e^{\beta^*}=\frac{3+\sqrt{57}}{12}\approx 0.879,
+$$
+i.e., according to the conducted study, the force of mortality for gym-visitor is approximately 88\% of the force of mortality for non-gym-visitors (ignoring all other possible covariates: age, gender etc.)
+:::
+
