@@ -548,7 +548,7 @@ viewof bweibull = Inputs.range([0.1, 10], { value: 0.1, step: 0.001, label: tex`
 ```
 
 ```{ojs}
-viewof isExp = Inputs.toggle({label: "exponential",value: true})
+viewof isExp = Inputs.toggle({label: "Exponential",value: true})
 
 viewof isGamma = Inputs.toggle({label: "gamma",value: true})
 
