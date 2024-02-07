@@ -259,22 +259,22 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The insurer pays in full up to an amount <span class="math inline">\(M\)</span>, the reinsurer pays all above <span class="math inline">\(M\)</span>, if needed: <span class="math display">\[
+<p>The insurer pays in full up to an amount <span class="math inline">\(M\)</span>, the reinsurer pays all above <span class="math inline">\(M\)</span>, if needed: <span id="eq-4.1"><span class="math display">\[
 Y=\begin{cases}
 X, &amp; \text{if } X\leq M,\\
 M, &amp; \text{if } X&gt;M;
 \end{cases} \qquad Z=X-Y.
-\]</span> Then <span class="math display">\[
-\begin{aligned}
-m_{k,Y} &amp;= \int_0^M x^k f_X(x)\,dx + M^k \mathbb{P}(X&gt;M),\\
-M_Y(t)&amp;= \int_0^M e^{tx}f_X(x)\,dx +e^{tM}\mathbb{P}(X&gt;M),
-\end{aligned}
-\]</span> and <span class="math display">\[
-\begin{aligned}
-m_{k,Z} &amp;= \int_M^\infty (x-M)^k f_X(x)\,dx, \\
-M_Z(t) &amp;= \mathbb{P}(X\leq M) +\int_M^\infty e^{t(x-M)}f_X(x)\,dx.
-\end{aligned}
-\]</span></p>
+\tag{4.1}\]</span></span> Then <span id="eq-4.2"><span class="math display">\[
+m_{k,Y} = \int_0^M x^k f_X(x)\,dx + M^k \mathbb{P}(X&gt;M),
+\tag{4.2}\]</span></span></p>
+<p><span id="eq-4.3"><span class="math display">\[
+M_Y(t)= \int_0^M e^{tx}f_X(x)\,dx +e^{tM}\mathbb{P}(X&gt;M),
+\tag{4.3}\]</span></span> and <span id="eq-4.4"><span class="math display">\[
+m_{k,Z} = \int_M^\infty (x-M)^k f_X(x)\,dx,
+\tag{4.4}\]</span></span></p>
+<p><span id="eq-4.5"><span class="math display">\[
+M_Z(t) = \mathbb{P}(X\leq M) +\int_M^\infty e^{t(x-M)}f_X(x)\,dx.
+\tag{4.5}\]</span></span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -308,9 +308,9 @@ f_Z(z)= \frac{f_X(z+M)}{1-F_X(M)}, \quad z&gt;0.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(0&lt;\alpha&lt;1\)</span>, we set <span class="math display">\[
+<p>For <span class="math inline">\(0&lt;\alpha&lt;1\)</span>, we set <span id="eq-4.6"><span class="math display">\[
 Y=\alpha X, \qquad Z=(1-\alpha)X.
-\]</span> Then e.g. <span class="math display">\[
+\tag{4.6}\]</span></span> Then e.g. <span class="math display">\[
 \begin{alignat*}{2}
 \mathbb{E}(Y)&amp;=\alpha\mathbb{E}(X), &amp;\qquad
 \mathbb{E}(Z)&amp;=(1-\alpha)\mathbb{E}(X),\\

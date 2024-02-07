@@ -29,21 +29,25 @@ Assume that all claims, $X_1$, \ldots, $X_N$ are i.i.d.r.v. (independent identic
 The total sum of all claims is then
 $$
 S=S_N:=X_1+\ldots+X_N,
-$$
+$$ {#eq-5.1} 
 where $S:=0$ if $N=0$.
 
 Then
 $$
 F_S(x)=\sum_{n=0}^\infty \mathbb{P}(N=n)\, \mathbb{P}(S\leq x \mid N=n).
-$$
+$$ {#eq-5.2} 
 
 Next,
 $$
-\begin{aligned}
-\mathbb{E}(S) &= \mathbb{E}(N)\, \mathbb{E}(X);\\
-\mathrm{Var}(S) &= \mathbb{E}(N)\, \mathrm{Var}(X) + \mathrm{Var}(N)\, \left( \mathbb{E}(X) \right)^2;\\
-M_S(t)& = M_N\left( \ln M_X(t) \right).
-\end{aligned}
+\mathbb{E}(S) = \mathbb{E}(N)\, \mathbb{E}(X);
+$$ {#eq-5.3}
+
+$$
+\mathrm{Var}(S) = \mathbb{E}(N)\, \mathrm{Var}(X) + \mathrm{Var}(N)\, \left( \mathbb{E}(X) \right)^2;
+$$ {#eq-5.4} 
+
+$$
+M_S(t) = M_N\left( \ln M_X(t) \right).
 $$ {#eq-eq1f}
 :::
 
@@ -59,14 +63,15 @@ cur = cur + 1
 Recall that $N:\Omega\to\mathbb{Z}_+$ has the **Poisson distribution** with parameter $\lambda>0$, notation: $N\sim Po(\lambda)$, if
 $$
 \mathbb{P}(N=n)=\frac{\lambda^n}{n!}e^{-\lambda}, \qquad n\in\mathbb{Z}_+.
-$$
+$$ {#eq-5.6} 
 
 Then
 $$
-\begin{aligned}
-\mathbb{E}(N)&=\mathrm{Var}(N)=\lambda,\\
-M_N(t)&= \exp\bigl( \lambda(e^t-1) \bigr).
-\end{aligned}
+\mathbb{E}(N)=\mathrm{Var}(N)=\lambda,
+$$ {#eq-5.7} 
+
+$$
+M_N(t)= \exp\bigl( \lambda(e^t-1) \bigr).
 $$ {#eq-mgfpo}
 :::
 
@@ -82,11 +87,15 @@ cur = cur + 1
 Let $N\sim Po(\lambda)$, let $X_1, \ldots, X_N$ are i.i.d.r.v., let $m_k:=m_{k,X}$.
 Then $S=X_1+\ldots+X_N$ has the **compound Poisson distribution** with the parameter $\lambda$ and
 $$
-\begin{aligned}
-\mathbb{E}(S)&=\lambda m_1,\\
-\mathrm{Var}(S)&=\lambda m_2,\\
-M_S(t)&= \exp\bigl( \lambda (M_X(t)-1) \bigr).
-\end{aligned}
+\mathbb{E}(S)=\lambda m_1,
+$$ {#eq-5.9} 
+
+$$
+\mathrm{Var}(S)=\lambda m_2,
+$$ {#eq-5.10} 
+
+$$
+M_S(t)= \exp\bigl( \lambda (M_X(t)-1) \bigr).
 $$ {#eq-mgfcpo}
 :::
 
@@ -111,11 +120,11 @@ $$
 is a compound Poisson random variable with the parameter
 $$
 \Lambda=\lambda_1+\ldots+\lambda_m
-$$
+$$ {#eq-5.12} 
 and the CDF of the single claim
 $$
 F(x)=\frac{1}{\Lambda} \bigl( \lambda_1 F_1(x)+\ldots+\lambda_m F_m(x) \bigr),
-$$
+$$ {#eq-5.13} 
 i.e.
 $$
 S=Y_1+\ldots+Y_N
@@ -135,20 +144,21 @@ cur = cur + 1
 $N\sim Bin(n,p)$, $n\in\mathbb{N}$, $p\in[0,1]$, iff, for $0\leq k\leq n$,
 $$
 \mathbb{P}(N=k)=\binom{n}{k} p^k(1-p)^{n-k}.
-$$
+$$ {#eq-5.14} 
 Then
 $$
 \begin{gathered}
 \mathbb{E}(N) = np, \qquad \mathrm{Var}(N)=np(1-p), \\ M_N(t)=(pe^t+1-p)^n.
 \end{gathered}
-$$
+$$ {#eq-5.15} 
 We can define $S=X_1+\ldots+X_N$ for i.i.d.r.v. $X_i$, and the distribution of $S$ is called the **compound binomial distribution**. Then
 $$
-\begin{gathered}
-\mathbb{E}(S)=np m_{1,X}, \quad \mathrm{Var}(S)= np m_{2,X} -np^2 m_{1,X}^2,\\
-M_S(t) = (pM_X(t)+1-p)^n.
-\end{gathered}
+\mathbb{E}(S)=np m_{1,X}, \quad \mathrm{Var}(S)= np m_{2,X} -np^2 m_{1,X}^2,
 $$
+
+$$
+M_S(t) = (pM_X(t)+1-p)^n.
+$$ {#eq-5.16} 
 :::
 
 ```{r}
@@ -192,7 +202,7 @@ $$ {#eq-NRdistr}
 - Let $\{i_1,\ldots,i_{N_R}\}\subset\{1,\ldots, N\}$ be indexes such that $X_{i_k}>M$ for $1\leq k\leq N_R$, and set $W_k:=X_{i_k}-M$. Then there is another representation
 $$
 S_R = W_1+\ldots + W_{N_R}.
-$$
+$$ {#eq-5.18} 
 
 - If, additionally, $N\sim Po(\lambda)$ for a $\lambda>0$, then ([-@eq-NRdistr]) reads, by ([-@eq-mgfpo]) or ([-@eq-mgfcpo]),
 $$

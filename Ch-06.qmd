@@ -121,7 +121,7 @@ cur = cur + 1
 - The **force of mortality** $\mu_x$ represents the instantaneous rate of mortality at a certain age $x\in[0,\mathfrak{w} ]$:
 $$
 \mu_x = \lim_{h\to0} \frac1h \mathbb{P}(T\leq x+h\mid T>x).
-$$
+$$ {#eq-6.4} 
 
 - By ([-@eq-Fxt]), $F_x(0)=0$ and
 $$
@@ -129,16 +129,16 @@ $$
 \mu_x &= \lim_{h\to0} \frac1h \bigl( F_x(h)-F_x(0) \bigr)\\
 &=F_x'(0)=\dfrac{d}{dt} \bigl( {}_{t}q_{x} \bigr)\biggr\rvert_{t=0}.
 \end{aligned}
-$$
+$$ {#eq-6.5} 
 
 - Consider the probability density function of $T$:
 $$
 f(t):=F'(t).
-$$
+$$ {#eq-6.6} 
 Then, one gets from ([-@eq-Fxt]):
 $$
 \mu_x = \frac{F'(x)}{1-F(x)}= \frac{f(x)}{1-F(x)}.
-$$
+$$ {#eq-6.7} 
 
 - The term "force of mortality" is mainly used in actuarial science. In engineering, the term **failure rate** is in use, and in statistics, it is called the **hazard function**.
 
@@ -161,7 +161,7 @@ cur = cur + 1
 The following interpretation may be useful: since $F_x(h)={}_{h}q_{x}$, we have
 $$
 {}_{h}q_{x}\approx \mu_x \cdot h.
-$$
+$$ {#eq-6.9} 
 :::
 
 ```{r}
@@ -176,7 +176,7 @@ cur = cur + 1
 - We consider
 $$
 f_x(t)=\dfrac{d}{dt} F_x(t).
-$$
+$$ {#eq-6.10} 
 
 - We have then, by ([-@eq-Fxt]),
 $$
@@ -269,13 +269,23 @@ cur = cur + 1
 
 - The following formulas holds:
 $$
-\begin{aligned}
-d_x&= l_x-l_{x+1};\\
-p_x&=\dfrac{l_{x+1}}{l_x}; \\
-q_x&=1-p_x=1-\dfrac{l_{x+1}}{l_x}=\dfrac{d_x}{l_x};\\
-{}_{t}p_{x}&= \dfrac{l_{x+t}}{l_x}; \\
-{}_{t}q_{x}& = 1-{}_{t}p_{x}=\dfrac{l_x-l_{x+t}}{l_x}.
-\end{aligned}
+d_x= l_x-l_{x+1};
+$$ {#eq-6.14} 
+
+$$
+p_x=\dfrac{l_{x+1}}{l_x}; 
+$$ {#eq-6.15} 
+
+$$ 
+q_x=1-p_x=1-\dfrac{l_{x+1}}{l_x}=\dfrac{d_x}{l_x};
+$$ {#eq-6.16} 
+
+$$
+{}_{t}p_{x}= \dfrac{l_{x+t}}{l_x}; 
+$$ {#eq-6.17} 
+
+$$
+{}_{t}q_{x} = 1-{}_{t}p_{x}=\dfrac{l_x-l_{x+t}}{l_x}.
 $$ {#eq-px-lx}
 
 :::
@@ -320,7 +330,7 @@ cur = cur + 1
 If deaths are uniformly distributed between the ages of $x$ and $x+1$, then, **for all** $t\in[0,1]$:
 $$
 {}_{t}q_{x}=t \cdot q_{x}.
-$$
+$$ {#eq-6.19} 
 
 ::: {.proof}
 Since the number of deaths is uniformly distributed, $l_{x+t}\in[l_{x+1},l_x]$ for all $t\in[0,1]$ and
@@ -348,18 +358,18 @@ cur = cur + 1
 Another assumption for the ages between $x$ and $x+1$ is that the force of mortality remains constant:
 $$
 \mu_{x+s} = \mu_x, \quad s\in[0,1).
-$$
+$$ {#eq-6.20}
 In this case, by ([-@eq-tpxInt]), one has
 $$
 {}_{t}p_{x} = e^{-t\mu_x} =
 \bigl( e^{-1\cdot \mu_x}\bigr)^t
 =(p_x)^t.
-$$
+$$ {#eq-6.21}
 Therefore,
 $$
 {}_{t}q_{x}=1 - e^{-t\mu_x} \neq t
 (1-e^{-\mu_x})= t q_x.
-$$
+$$ {#eq-6.22}
 However, if $\mu_x\approx 0$, then
 ${}_{t}q_{x}\approx t\mu_x \approx t q_x$.
 :::
@@ -409,12 +419,12 @@ cur = cur + 1
 The **central rate of mortality** at age $x$ is the ration of the number of deaths over the year of age $x$ to $x+1$ to the average number of lives then:
 $$
 m_x=\dfrac{d_x}{\displaystyle\int_0^1 l_{x+t}\,dt}.
-$$
+$$ {#eq-6.24}
 We can also rewrite this:
 $$
 m_x= \frac{q_x}{\displaystyle\int_0^1 {}_{t}p_{x} \,dt}=
 \dfrac{\displaystyle\int_0^1 {}_{t}p_{x} \mu_{x+t}\,dt}{\displaystyle\int_0^1 {}_{t}p_{x} \,dt}<q_x.{}
-$$
+$$ {#eq-6.25}
 :::
 
 ```{r}
@@ -429,7 +439,7 @@ cur = cur + 1
 The **expected future lifetime** after age $x\in[0,\mathfrak{w}]$ is defined as follows:
 $$
 \mathring{e}_x: = \mathbb{E}(T_x).
-$$
+$$ {#eq-6.26}
 Using the definition of the expectation for a continuous random variable, we have, by ([-@eq-densrepr]),
 $$
 \begin{aligned}
@@ -456,7 +466,7 @@ $$
 as well, one can rewrite:
 $$
 \mathring{e}_x = \mathbb{E}(T_x)=\int_0^\infty {}_{t}p_{x} \,dt.
-$$
+$$ {#eq-6.27}
 :::
 
 ```{r}
@@ -471,7 +481,7 @@ cur = cur + 1
 Function $x+\mathring{e}_x$ is increasing in $x$, i.e.
 $$
 x+\mathring{e}_x<y+\mathring{e}_y, \quad x<y.
-$$
+$$ {#eq-6.28}
 In other words, expectation for the age of death $T=x+T_x$ increases when the person managed to live more.
 
 ::: {.proof}
@@ -533,7 +543,7 @@ $$
 We define the **curtate expectation of life** as follows:
 $$
 e_x=\mathbb{E}(K_x).
-$$
+$$ {#eq-6.29}
 We have, hence,
 $$
 \begin{aligned}
@@ -545,7 +555,7 @@ $$
 Since $\mathbb{P}(K_x\geq j)= \mathbb{P}(T_x\geq j)={}_{j}p_{x}$ ($=0$ for $j>[\mathfrak{w}-x]$),
 $$
 e_x =\mathbb{E}(K_x) =\sum_{j=1}^{\infty}{}_{j}p_{x}.
-$$
+$$ {#eq-6.30}
 :::
 
 ```{r}
