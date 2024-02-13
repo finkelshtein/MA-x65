@@ -72,46 +72,6 @@ f_Y(x)  = \int_\mathbb{R} f_{X,Y}(x,y)\,dx.
 $$ {#eq-3.7}
 :::
 
-::: {#fig-Exp-CDF}
-
-```{ojs}
-
-viewof l = Inputs.range([0.1, 10], { value: 1, step: 0.001, label: tex`\lambda:` })
-
-viewof xmexp = Inputs.range([1, 100], { value: 10, step: 1, label: tex`x_\mathrm{max}` })
-
-ymaxexp = 1
-
-Plot.plot({
-  x: { domain: [-0.1, xmexp] },
-  y: { domain: [-0.1*ymaxexp, ymaxexp*1.2] },
-  width: 640,
-  height: 240,
-  marks: [
-    Plot.line(
-      d3
-        .range(0, xmexp, 0.1)
-        .map(t => [
-          t,
-          1-Math.exp(-l * t)
-        ]),{
-        strokeWidth: 3,
-        stroke: "steelblue"
-      }
-    ),
-      Plot.ruleX([0]),
-      Plot.ruleY([0]),
-      Plot.axisX({ y: 0 }),
-      Plot.axisY({ x: 0 })
-  ]
-})
-```
-
-Graph of "typical" CDF on the example of the exponential distribution: $F_X(x)=1-e^{-\lambda x}$
-:::
-
-
-
 
 ```{r}
 #| echo: false
